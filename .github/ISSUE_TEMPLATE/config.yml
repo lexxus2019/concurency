@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Вопросы по лабе — в чат группы, не в issues
+    url: https://github.com/lexxus2019/concurency/issues
+    about: Issue заводим только под конкретное задание, RFC по контракту или найденный баг.

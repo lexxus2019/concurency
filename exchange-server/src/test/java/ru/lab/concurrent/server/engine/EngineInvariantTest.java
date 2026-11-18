@@ -139,20 +139,35 @@ class EngineInvariantTest {
     @DisplayName("наивная реализация ОБЯЗАНА воспроизводить гонку — иначе тест бесполезен")
     void brokenEngineReproducesRace() throws Exception {
         Hazard.setMicros(80);
-        StateView state = drive(engine("none", TestEngines.props(80, 1)));
-        List<Violation> violations = Invariants.check(state);
+        List<Violation> violations = driveUntilBroken("none", TestEngines.props(80, 1), 80);
         assertFalse(violations.isEmpty(),
-                () -> "гонка не воспроизвелась: увеличь hazard-micros или число потоков\n" + dump(state));
+                "гонка не воспроизвелась за 3 попытки: увеличь hazard-micros или число потоков");
     }
 
     @Test
     @DisplayName("семафор сам по себе корректности не даёт (задание с подвохом)")
     void semaphoreAloneIsNotAtomicity() throws Exception {
         Hazard.setMicros(80);
-        StateView state = drive(engine("semaphore", TestEngines.props(80, 4)));
-        List<Violation> violations = Invariants.check(state);
+        List<Violation> violations = driveUntilBroken("semaphore", TestEngines.props(80, 4), 80);
         assertFalse(violations.isEmpty(),
-                () -> "ожидали нарушений при permits=4 — их нет, нагрузка слишком слабая\n" + dump(state));
+                "ожидали нарушений при permits=4 — не воспроизвелись за 3 попытки, нагрузка слишком слабая");
+    }
+
+    /**
+     * Гонка — событие вероятностное: на медленном CI-раннере с 2 CPU редкий прогон может
+     * оказаться «чистым», и это не сигнал об отсутствии бага. Поэтому повторяем попытку,
+     * а вывод фиксируем только после трёх чистых прогонов подряд.
+     */
+    private List<Violation> driveUntilBroken(String name, LabProperties props, long micros) throws Exception {
+        List<Violation> last = List.of();
+        for (int attempt = 0; attempt < 3; attempt++) {
+            Hazard.setMicros(micros);
+            last = Invariants.check(drive(engine(name, props)));
+            if (!last.isEmpty()) {
+                return last;
+            }
+        }
+        return last;
     }
 
     @Test

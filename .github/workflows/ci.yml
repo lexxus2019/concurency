@@ -1,0 +1,49 @@
+name: ci
+
+# Definition of done для любой стратегии: собирается и не ломает инварианты.
+# Преподаватель на практике показывает эту проверку вместо «ну у меня на машине работает».
+
+on:
+  push:
+    branches: [main, "strategy/*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      # основные проверки лабы: инварианты по всем стратегиям
+      - name: тесты стратегий (EngineInvariantTest)
+        run: mvn -B -pl exchange-server -am -Dtest=EngineInvariantTest test
+
+      # стоимость замков без HTTP: артефакт можно приложить к отчёту
+      - name: микро-бенчмарк стратегий
+        run: mvn -B -pl exchange-server -am -Dtest=ReadWriteMicroBenchmarkTest
+             -Dsurefire.failIfNoSpecifiedTests=false test
+
+      - name: полная сборка всех модулей
+        run: mvn -B -DskipTests package
+
+      - name: харнес умеет прогнать стратегии в своей JVM
+        run: java -jar lab-harness/target/lab-harness-1.0.0.jar --ops=15 --seller-ops=5
+             --only=none,sync,trylock,locks,rw,optimistic,queue --csv=out/ci.csv
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lab-results
+          path: |
+            out/ci.csv
+            exchange-server/target/micro-bench.txt
+          if-no-files-found: warn
