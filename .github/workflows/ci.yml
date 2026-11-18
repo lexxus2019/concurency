@@ -16,12 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: JDK 21
+      - name: JDK 21 + Maven
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "21"
+          # Maven ставим явно: на свежих ubuntu-раннера его может не быть в образе,
+          # и тогда шаг падает за секунды со «mvn: command not found»
+          maven-version: "3.9"
           cache: maven
+
+      - name: версия инструментов
+        run: mvn -v && java -version
 
       # основные проверки лабы: инварианты по всем стратегиям.
       # failIfNoSpecifiedTests=false обязательно: -am тянет exchange-core, где таких тестов нет,
