@@ -23,9 +23,12 @@ jobs:
           java-version: "21"
           cache: maven
 
-      # основные проверки лабы: инварианты по всем стратегиям
+      # основные проверки лабы: инварианты по всем стратегиям.
+      # failIfNoSpecifiedTests=false обязательно: -am тянет exchange-core, где таких тестов нет,
+      # и без этого флага surefire падает с «No tests matching pattern»
       - name: тесты стратегий (EngineInvariantTest)
-        run: mvn -B -pl exchange-server -am -Dtest=EngineInvariantTest test
+        run: mvn -B -pl exchange-server -am -Dtest=EngineInvariantTest
+             -Dsurefire.failIfNoSpecifiedTests=false test
 
       # стоимость замков без HTTP: артефакт можно приложить к отчёту
       - name: микро-бенчмарк стратегий
