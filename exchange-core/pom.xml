@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>ru.lab.concurrent</groupId>
+    <artifactId>exchange-lab</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>exchange-core</artifactId>
+  <name>exchange-lab :: контракт API и проверки инвариантов</name>
+  <description>
+    Единственный модуль, который общий для всех «команд». Здесь живёт контракт (DTO + HTTP-клиент)
+    и чистая функция проверки инвариантов. Менять контракт можно только по договорённости.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+  </dependencies>
+</project>

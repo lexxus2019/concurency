@@ -1,0 +1,14 @@
+target/
+out/
+*.class
+*.jar.original
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+# артефакты практики: свои таблицы и отчёты студенты держат в своих ветках
+*.log
+hs_err_pid*.log
+replay_pid*.log

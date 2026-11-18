@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: exchange-server
+  main:
+    banner-mode: off
+
+server:
+  port: 8080
+  # специально небольшой пул: когда стратегия держит замок (или устроила deadlock),
+  # соединения и потоки кончаются быстро — это Desired поведение для демо «сервис лёг»
+  tomcat:
+    threads:
+      max: 32
+      min-spare: 4
+    max-connections: 200
+    accept-count: 10
+
+exchange:
+  # активная при старте стратегия: none | sync | trylock | locks | rw | optimistic | queue | semaphore | deadlock
+  strategy: none
+  # длительность «медленной работы» внутри критической секции, микросекунды.
+  # 0 = гонку придётся ловить долгим прогоном; 150 = она видна за секунды
+  hazard-micros: 150
+  # сколько ждём замок в trylock/locks/rw, прежде чем отдать 503 BUSY
+  lock-timeout-ms: 40
+  # число поделённых замков в trylock (степень двойки)
+  lock-shards: 64
+  # честный замок: очередь FIFO, меньше starvation, ниже throughput
+  fair: false
+  # максимум повторов CAS в оптимистичной стратегии
+  optimistic-retries: 8
+  # глубина очереди акторной стратегии
+  queue-capacity: 512
+  # сколько ждём результат из очереди актора
+  queue-timeout-ms: 2000
+  # сколько одновременных операций пропускает семафорная стратегия
+  permits: 4
+  # в deadlock-стратегии: true = tryLock с таймаутом (спасение), false = вечный lock (взаимоблокировка)
+  deadlock-escape: false
+
+logging:
+  level:
+    root: WARN
+    ru.lab.concurrent: INFO
+    org.springframework: WARN
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %-5level [%15.15thread] %logger{24} : %msg%n"

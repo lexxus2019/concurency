@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.13</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>ru.lab.concurrent</groupId>
+  <artifactId>exchange-lab</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <name>exchange-lab :: родитель</name>
+  <description>
+    Лаборатория «программирование в команде»: несколько независимых клиентов конкурентно
+    пишут в одно состояние биржи. Разбираем способы разрулить конкурентный доступ.
+  </description>
+
+  <properties>
+    <java.version>21</java.version>
+    <maven.compiler.release>21</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <modules>
+    <!-- «контракт»: общий модуль, который читают все команды-участники -->
+    <module>exchange-core</module>
+    <!-- команда #1: сама биржа (Spring Boot сервис) -->
+    <module>exchange-server</module>
+    <!-- команда #2: клиент-покупатель -->
+    <module>buyer-client</module>
+    <!-- команда #3: клиент-продавец -->
+    <module>seller-client</module>
+    <!-- преподаватель: прогонощик всех стратегий + таблица результатов -->
+    <module>lab-harness</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <configuration>
+            <!-- в лабе нужны обычные исполняемые jar-ники без docker/layers -->
+            <layers.enabled>false</layers.enabled>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

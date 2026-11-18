@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>ru.lab.concurrent</groupId>
+    <artifactId>exchange-lab</artifactId>
+    <version>1.0.0</version>
+  </parent>
+
+  <artifactId>buyer-client</artifactId>
+  <name>exchange-lab :: клиент-покупатель</name>
+  <description>
+    Самостоятельный процесс. Не знает НИЧЕГО про реализацию биржи, только контракт из
+    exchange-core — ровно как реальный клиент команды-подрядчика.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>ru.lab.concurrent</groupId>
+      <artifactId>exchange-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>ru.lab.concurrent.buyer.BuyerClientApp</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
