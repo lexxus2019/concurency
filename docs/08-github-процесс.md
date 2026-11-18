@@ -48,7 +48,9 @@ git switch strategy/trylock
 
 ## 3. CI — это и есть «definition of done»
 
-Workflow `.github/workflows/ci.yml` делает три вещи:
+Workflow `.github/workflows/ci.yml` считается на `push` в `main` и на любой PR в `main`
+(сами `strategy/*` при пуше не гоняются — проверка появляется, когда ты открываешь PR;
+можно и вручную через запуск workflow). Делает три вещи:
 
 * `EngineInvariantTest` — инварианты по всем стратегиям (твоя тоже будет в списке);
 * `ReadWriteMicroBenchmarkTest` — стоимость замков без HTTP, артефакт `micro-bench.txt`;

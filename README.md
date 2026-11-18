@@ -1,6 +1,7 @@
 # Биржа: несколько команд — один service (лаборатория по конкурентному доступу)
 
-Репозиторий: <https://github.com/lexxus2019/concurency> · CI: `.github/workflows/ci.yml` ·
+Репозиторий: <https://github.com/lexxus2019/concurency> ·
+![ci](https://github.com/lexxus2019/concurency/actions/workflows/ci.yml/badge.svg) ·
 сдача практики идёт через ветку, PR и ревью соседней тройкой — см. `docs/08-github-процесс.md`.
 
 Учебный проект для практики по теме **«программирование в команде»**. Три независимых
