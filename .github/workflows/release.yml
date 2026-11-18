@@ -1,0 +1,58 @@
+name: release
+
+# Публикация собирается сама по тегу v* — студентам без Maven можно скачивать готовые jar-ники.
+# Заодно это живой пример «сборка это не локальная магия, а часть процесса команды».
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: сборка всех модулей
+        run: mvn -B -DskipTests package
+
+      - name: собрать архив запуска для аудитории (jar + cmd-скрипты + docs)
+        run: |
+          mkdir -p dist/scripts dist/docs
+          cp exchange-server/target/exchange-server-*-exec.jar dist/
+          cp buyer-client/target/buyer-client-*.jar dist/
+          cp seller-client/target/seller-client-*.jar dist/
+          cp lab-harness/target/lab-harness-*.jar dist/
+          cp scripts/*.cmd dist/scripts/
+          cp docs/*.md dist/docs/
+          cp README.md dist/
+          tar -czf exchange-lab-dist.tar.gz -C dist .
+
+      - name: релиз с артефактами
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            exchange-lab-dist.tar.gz
+            exchange-server/target/exchange-server-*-exec.jar
+            buyer-client/target/buyer-client-*.jar
+            seller-client/target/seller-client-*.jar
+            lab-harness/target/lab-harness-*.jar
+          body: |
+            Сборка для практики «конкурентный доступ к общим ресурсам».
+
+            В `exchange-lab-dist.tar.gz` — четыре jar-ника, `scripts/*.cmd` и `docs/*.md`,
+            то есть весь стенд поднимается без Maven: распаковать, `java -jar`.
+
+            Исходники и история: этот тег.
+            Архив исходников: `${{ github.server_url }}/${{ github.repository }}/archive/${{ github.ref_name }}.zip`

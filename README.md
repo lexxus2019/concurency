@@ -17,6 +17,10 @@
 
 ## 1. Быстрый старт (Windows, JDK 21 + Maven 3.9)
 
+Если Maven ставить не хочется — в релизах лежит `exchange-lab-dist.tar.gz` с готовыми
+jar-никами, скриптами и документацией: распаковал и `java -jar`.
+Текущий релиз: <https://github.com/lexxus2019/concurency/releases/latest>
+
 ```bat
 :: 0. собрать всё (первый раз ~2 минуты, дальше кэш)
 mvn -DskipTests package
